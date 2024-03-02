@@ -1,0 +1,6 @@
+@StroiTrendTestTask.Server_HostAddress = http://localhost:5225
+
+GET {{StroiTrendTestTask.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

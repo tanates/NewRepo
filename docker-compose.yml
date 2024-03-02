@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  stroitrendtesttask.server:
+    image: ${DOCKER_REGISTRY-}stroitrendtesttaskserver
+    build:
+      context: .
+      dockerfile: StroiTrendTestTask.Server/Dockerfile
