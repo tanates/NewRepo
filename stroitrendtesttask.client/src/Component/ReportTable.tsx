@@ -10,7 +10,7 @@ interface TableProps {
   reportName: string;
 }
 
-const API_URL = `https://backend:7150/api/table`
+const API_URL = `https://localhost:7150/api/table/`
 
 const Table: React.FC<TableProps> = ({ reportName }) => {
   const [data, setData] = useState<ReportData | null>(null);
@@ -21,13 +21,12 @@ const Table: React.FC<TableProps> = ({ reportName }) => {
         const result = await axios.get<ReportData>(API_URL+reportName);
         setData(result.data);
       } catch (error) {
-        // Try making the request to a different URL if the request failed and there is a fallback URL
-        const fallbackURL = `https://localhost:7150/api/table/${reportName}`
+      
+        const fallbackURL = `https://DockerPuth/${reportName}`
         if (fallbackURL) {
           const fallbackResult = await axios.get<ReportData>(fallbackURL);
           setData(fallbackResult.data);
         } else {
-          // Log an error message if there is no fallback URL
           console.error('Error making request:', error);
         }
       }
