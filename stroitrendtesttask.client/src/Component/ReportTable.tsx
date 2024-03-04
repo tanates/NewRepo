@@ -60,16 +60,16 @@ const Table: React.FC<TableProps> = ({ reportName }) => {
     <div className="content">
         <div className="table-responsive ">
            <h2>Name Table : {reportName}</h2>
-          <table className='table table-striped table-bordered custom-table'>
+          <table className='table table-striped table-bordered custom-table-dark table-dark'>
               
-            <thead>
+            <thead className="thead-dark">
           
               <tr>
-                <th scope="col">Data</th>
-                <th scope="col">Total</th>
+                <th scope="row">Data</th>
+                <th scope="row">Total</th>
                 {tableHeaders.map((name) =>(
                     
-                     <th scope="col" key={name}>{name}</th>
+                     <th scope="row" key={name}>{name}</th>
                 ))}
               </tr>
               

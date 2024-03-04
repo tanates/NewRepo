@@ -21,7 +21,7 @@ interface Record {
     <div className="content">
         <div className="table-responsive">
         <h2>Name Table : {reportName}</h2>
-          <table className='table table-striped table-bordered custom-table'>
+          <table className='table table-striped table-bordered custom-table-dark table-dark'>
                 <thead >
                     <tr>
                     <th>Дата</th>
