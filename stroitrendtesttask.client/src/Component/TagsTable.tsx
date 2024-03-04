@@ -34,12 +34,13 @@ interface Record {
                     <tr key={date}>
                         <td>{date}</td>
                         <td >
-                        {keys.map((key) => (
-          <div className="d-flex" key={`${date}-${key}`}>
-            {key} - {records[date][key] || 0}
-          </div>
-        ))}
-                        </td>
+                        {Object.entries(records[date]).map(([key, value]) => (
+                            <div  className="d-flex" key={`${date}-${key}` }>
+                               
+                               {key} - {value}
+                            </div>
+                        ))}
+                       </td>
                     </tr>
                     ))}
                 </tbody>
