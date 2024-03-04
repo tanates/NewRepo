@@ -42,11 +42,11 @@ const Table: React.FC<TableProps> = ({ reportName }) => {
   }
 
   const tableHeaders = Object.entries(data.records[Object.keys(data.records)[0]]).map(([name, _]) => name);
-  const tableHeadersTags = Object.entries(data.records[Object.keys(data.records)[0]]).map(([name, _]) => name);
   const tableRows = Object.entries(data.records).map(([date, records]) => {
     const rowData = [date, Object.values(records).reduce((total, value) => total + value, 0), ...Object.values(records)];
 
     return (
+      
       <tr key={date}>
         {rowData.map((value, index) => (
           <td key={`${date}-${index}`}>{value}</td>
@@ -58,11 +58,12 @@ const Table: React.FC<TableProps> = ({ reportName }) => {
   if(reportName!=="Tags"){
   return (
     <div className="content">
-      <div className='container'>
-        <div className="table-responsive">
+        <div className="table-responsive ">
+           <h2>Name Table : {reportName}</h2>
           <table className='table table-striped table-bordered custom-table'>
+              
             <thead>
-              {reportName!=="Tags"&&(
+          
               <tr>
                 <th scope="col">Data</th>
                 <th scope="col">Total</th>
@@ -71,28 +72,21 @@ const Table: React.FC<TableProps> = ({ reportName }) => {
                      <th scope="col" key={name}>{name}</th>
                 ))}
               </tr>
-              )}
-              {reportName==="Tags"&&(
-                  tableHeadersTags
-              )}
+              
             </thead>
             <tbody>
-              { reportName === "Tags" && (
-                 tableRows
-              )} 
-              {reportName!=="Tags"&&(
-                tableRows
-              )}
+             
+                 {tableRows}
+             
             </tbody>
           </table>
         </div>
       </div>
-    </div>
   );
               }
     else{
       return (
-        <TagsTable reportData={data}/>
+        <TagsTable reportData={data} reportName='Tags'/>
       )
     }
 };

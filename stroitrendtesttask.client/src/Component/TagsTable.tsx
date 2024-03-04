@@ -10,18 +10,17 @@ interface Record {
   
   interface TableProps {
     reportData: ReportData;
+    reportName:string;
   }
   
-  const TagsTable: React.FC<TableProps> = ({ reportData }) => {
+  const TagsTable: React.FC<TableProps> = ({ reportData  , reportName }) => {
     const { records } = reportData;
     const dates = Object.keys(records);
-    const values = Object.values(records)[0];
-    const keys = Object.keys(values);
 
   return (
     <div className="content">
-      <div className='container'>
         <div className="table-responsive">
+        <h2>Name Table : {reportName}</h2>
           <table className='table table-striped table-bordered custom-table'>
                 <thead >
                     <tr>
@@ -47,7 +46,6 @@ interface Record {
             </table>
        </div>    
     </div>
-</div>
   );
 };
 export default TagsTable
