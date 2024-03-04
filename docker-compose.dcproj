@@ -4,7 +4,7 @@
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
     <DockerPublishLocally>False</DockerPublishLocally>
-    <ProjectGuid>a939914a-719d-4133-b057-b4151d580a6a</ProjectGuid>
+    <ProjectGuid>43a72642-edf5-4860-a0f8-acd1e920b7a4</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
     <DockerServiceName>stroitrendtesttask.server</DockerServiceName>

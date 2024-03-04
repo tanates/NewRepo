@@ -14,12 +14,9 @@ COPY ["StroiTrendTestTask.Server/StroiTrendTestTask.Server.csproj", "StroiTrendT
 COPY ["stroitrendtesttask.client/stroitrendtesttask.client.esproj", "stroitrendtesttask.client/"]
 RUN dotnet restore "./StroiTrendTestTask.Server/./StroiTrendTestTask.Server.csproj"
 COPY . .
-RUN mkdir -p /app/client && cp -r ./stroitrendtesttask.client/* /app/client
-WORKDIR /app/client
-RUN apt-get update && apt-get install -y nodejs npm
-RUN npm install
-WORKDIR /src/StroiTrendTestTask.Server
+WORKDIR "/src/StroiTrendTestTask.Server"
 RUN dotnet build "./StroiTrendTestTask.Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./StroiTrendTestTask.Server.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false

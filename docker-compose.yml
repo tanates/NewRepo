@@ -6,3 +6,11 @@ services:
     build:
       context: .
       dockerfile: StroiTrendTestTask.Server/Dockerfile
+  client:
+         image: ${DOCKER_REGISTRY-}stroitrendtesttaskclint
+         build:
+           context: ./stroitrendtesttask.client
+           dockerfile: Dockerfile
+         ports:
+               -  "80:80" 
+         container_name: client
