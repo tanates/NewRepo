@@ -23,8 +23,8 @@ const Table: React.FC<TableProps> = ({ reportName }) => {
         const result = await axios.get<ReportData>(API_URL+reportName);
         setData(result.data);
       } catch (error) {
-
-        const fallbackURL = `https://DockerPuth/${reportName}`
+        // Try making the request to a different URL if the request failed and there is a fallback URL
+        const fallbackURL = `https://localhost:7150/api/table/${reportName}`
         if (fallbackURL) {
           const fallbackResult = await axios.get<ReportData>(fallbackURL);
           setData(fallbackResult.data);
