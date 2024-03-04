@@ -1,0 +1,6 @@
+.custom-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px; /* Вы можете изменить это значение в соответствии с вашими потребностями */
+  }
