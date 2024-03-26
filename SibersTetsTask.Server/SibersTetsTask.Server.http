@@ -1,0 +1,6 @@
+@SibersTetsTask.Server_HostAddress = http://localhost:5070
+
+GET {{SibersTetsTask.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
