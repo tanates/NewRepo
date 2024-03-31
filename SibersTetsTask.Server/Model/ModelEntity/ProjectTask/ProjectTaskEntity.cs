@@ -10,12 +10,15 @@ namespace SibersTetsTask.Server.Model.ModelEntity.ProjectTask
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string Status { get; set; }
+        public int Status { get; set; }
         public string Comment { get; set; }
         public int Priority { get; set; }
 
 
-        [ForeignKey(nameof(ProjectId))]
+
+
+
+
         public ProjectEntity Project { get; set; }
         public Guid ProjectId { get; set; }
 

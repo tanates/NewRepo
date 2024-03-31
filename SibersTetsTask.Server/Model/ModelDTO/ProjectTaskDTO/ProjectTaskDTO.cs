@@ -9,24 +9,25 @@ namespace SibersTetsTask.Server.Model.ModelDTO.ProjectTaskDTO
     {
         public ProjectTaskDTO(ProjectTaskRequest request)
         {
-            Id = Id;
+            Id = new Guid();
             TaskName = request.TaskName;
-            Status = request.Status.ToString();
+            Status =(int) request.Status;
             Comment = request.Comment;
             Priority = request.Priority;
+            ProjectId = request.ProjectId;
         }
 
         public Guid Id { get; set; }
 
         public string TaskName { get; set; }
 
-        public string AuthorEmail { get; set; }
+        public string ?AuthorEmail { get; set; }
 
-        public Guid AuthorId { get; set; }
-        public string AssigneeEmail { get; set; }
+        public Guid  ProjectId { get; set; }
+        public string? AssigneeEmail { get; set; }
 
-        public ProjectEntity ProjectName { get; set; }
-        public string Status { get; set; }
+        public ProjectEntity ?ProjectName { get; set; }
+        public int Status { get; set; }
 
         public string Comment { get; set; }
 

@@ -8,11 +8,8 @@ namespace SibersTetsTask.Server.Model.ModelRequest
 
         public string TaskName { get; set; }
 
-        public EmployeeEntity? Author { get; set; }
-        public Guid AuthorId { get; set; }
-
-        public EmployeeEntity? Assignee { get; set; }
-        public Guid AssigneeId { get; set; }
+  
+        public Guid ProjectId { get; set; }
 
         public TaskStatus Status { get; set; }
 

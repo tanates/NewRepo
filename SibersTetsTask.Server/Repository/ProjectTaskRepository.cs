@@ -61,8 +61,8 @@ namespace SibersTetsTask.Server.Repository
                 Id = taskDTO.Id,
                 Comment = taskDTO.Comment,
                 Priority = taskDTO.Priority,
-                Project = taskDTO.ProjectName,
-                Status = taskDTO.Status.ToString(),
+                ProjectId = taskDTO.ProjectId,
+                Status = (int)taskDTO.Status,
                 Name = taskDTO.TaskName,
             };
 

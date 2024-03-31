@@ -27,13 +27,13 @@ namespace SibersTetsTask.Server.Controllers
         {
             return Ok(await servisec.ProjectTaskRemove(projectTaskId));
         }
-        [HttpPut]
+        [HttpPut("remove/employee")]
         public async Task<string> ProjectTaskRemoveAEmployee(TaskProjectServices servisec,Guid taskId, Guid employeeId)
         {
 
             return await servisec.ProjectTaskRemoveAEmployee(taskId, employeeId);
         }
-        [HttpPut]
+        [HttpPut("remove/project")]
         public async Task<string> ProjectTaskRemoveAProject(TaskProjectServices servisec,Guid taskId, Guid projecId)
         {
   
