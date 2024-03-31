@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SibersTetsTask.Server.Context;
 using SibersTetsTask.Server.Interface.IEmployee;
-using SibersTetsTask.Server.Model.Project;
-using SibersTetsTask.Server.Model.User;
+using SibersTetsTask.Server.Model.ModelDTO.UserDTO;
+using SibersTetsTask.Server.Model.ModelEntity.Project;
+using SibersTetsTask.Server.Model.ModelEntity.User;
 
 namespace SibersTetsTask.Server.Repository
 {
@@ -14,33 +15,36 @@ namespace SibersTetsTask.Server.Repository
         {
             _context = context;
         }
-        public async Task AddEmployee(Employee employee)
+        public async Task AddEmployee(EmployeeDTO employee ,string hashPassword)
         {
-            if(await _context.Employees.AnyAsync(i=>i.Name == employee.Name 
-            && i.Name ==employee.Name 
+            if(await _context.Employees.AnyAsync(i=>i.FirstName == employee.Name 
+            && i.FirstName == employee.Name 
             && i.MiddleName == employee.MiddleName))
             {
                 throw new Exception("The employee is already in the database");
             }
 
+            if(await _context.Employees.AnyAsync(i=> i.Email == employee.Email))
+            {
+                throw new Exception("Email to borrow");
+            }
             var employeeEntity = new EmployeeEntity
             {
                 Id  = employee.Id,
-                Name = employee.Name,
+                FirstName = employee.Name,
                 MiddleName = employee.MiddleName,
-                Surname = employee.Surname,
+                LastName = employee.Surname,
                 Email = employee.Email,
-                Projects = employee.Projects,
-                HashPassword = employee.HashPassword,
+                HashPassword = hashPassword,
             };
 
             await _context.Employees.AddAsync(employeeEntity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task <bool> Delete(Guid id)
+        public async Task <bool> Delete(string email)
         {
-            var employees = await _context.Employees.FindAsync(id);
+            var employees = await _context.Employees.FirstOrDefaultAsync(i=>i.Email==email);
             if (employees == null)
             {
                 throw new Exception("Not find project ");
@@ -56,9 +60,9 @@ namespace SibersTetsTask.Server.Repository
            return await _context.Employees.ToListAsync();
         }
 
-        public async Task<EmployeeEntity> GetEmployeeById(Guid id)
+        public async Task<EmployeeEntity> GetEmployeeByEmail(Guid employeeId)
         {
-            var employee = await _context.Employees.FirstOrDefaultAsync(i=>i.Id == id);
+            var employee = await _context.Employees.FirstOrDefaultAsync(i=>i.Id == employeeId);
 
             if(employee == null)
             {
@@ -82,10 +86,35 @@ namespace SibersTetsTask.Server.Repository
             return employee.Projects.ToList();
         }
 
-        public Task Update(Employee employee)
+        public async Task<string> Update(EmployeeDTO employeeDTO)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var employee = await _context.Employees.FirstOrDefaultAsync(i=>i.Email==employeeDTO.Email);
+
+                if (employee == null)
+                {
+                    return $"Employee not found {employeeDTO.Email}";
+                }
+
+                employee.FirstName = employeeDTO.Name ?? employee.FirstName;
+                employee.LastName = employeeDTO.Surname ?? employee.LastName;
+                employee.MiddleName = employeeDTO.MiddleName ?? employee.MiddleName;
+                employee.Email = employeeDTO.Email ?? employee.Email;
+
+                await _context.SaveChangesAsync();
+                return "Update sucssefull";
+            }
+            catch (Exception ex)
+            {
+
+                return $"Error Update : {ex}"; 
+            }
+          
         }
 
+
+
+     
     }
 }

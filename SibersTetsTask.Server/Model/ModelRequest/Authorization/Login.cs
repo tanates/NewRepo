@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SibersTetsTask.Server.Model.Authorization
+namespace SibersTetsTask.Server.Model.ModelRequest.Authorization
 {
     public class Login
     {

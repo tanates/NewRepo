@@ -1,4 +1,4 @@
-﻿using SibersTetsTask.Server.Model.User;
+﻿using SibersTetsTask.Server.Model.ModelEntity.User;
 
 namespace SibersTetsTask.Server.Model.ModelRequest
 {
@@ -8,10 +8,10 @@ namespace SibersTetsTask.Server.Model.ModelRequest
 
         public string TaskName { get; set; }
 
-        public EmployeeEntity Author { get; set; }
+        public EmployeeEntity? Author { get; set; }
         public Guid AuthorId { get; set; }
 
-        public EmployeeEntity Assignee { get; set; }
+        public EmployeeEntity? Assignee { get; set; }
         public Guid AssigneeId { get; set; }
 
         public TaskStatus Status { get; set; }
@@ -19,8 +19,8 @@ namespace SibersTetsTask.Server.Model.ModelRequest
         public string Comment { get; set; }
 
         public int Priority { get; set; }
+      
     }
-
     public enum TaskStatus
     {
         ToDo,

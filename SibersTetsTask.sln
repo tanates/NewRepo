@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SibersTetsTask.Server", "Si
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "siberstetstask.client", "siberstetstask.client\siberstetstask.client.esproj", "{DBC841B5-E661-4345-8B2C-C227D9A74AD5}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{DEECD684-A405-4515-A32A-4BE6DEDCF924}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,10 +23,6 @@ Global
 		{DBC841B5-E661-4345-8B2C-C227D9A74AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBC841B5-E661-4345-8B2C-C227D9A74AD5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DBC841B5-E661-4345-8B2C-C227D9A74AD5}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{DEECD684-A405-4515-A32A-4BE6DEDCF924}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DEECD684-A405-4515-A32A-4BE6DEDCF924}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DEECD684-A405-4515-A32A-4BE6DEDCF924}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DEECD684-A405-4515-A32A-4BE6DEDCF924}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

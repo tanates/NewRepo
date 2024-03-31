@@ -17,10 +17,3 @@ services:
     build:
       context: .
       dockerfile: SibersTetsTask.Server/Dockerfile
-  
-  react-app:
-    build: ./react-app
-    ports:
-      - "3000:3000"
-    depends_on:
-      - api

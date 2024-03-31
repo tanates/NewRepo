@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using SibersTetsTask.Server.Model.JWT;
+using SibersTetsTask.Server.Model.ModelDTO.JWT;
 using System.Text;
 
 namespace SibersTetsTask.Server.Extensions

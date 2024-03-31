@@ -1,9 +1,9 @@
-﻿using SibersTetsTask.Server.Model.User;
+﻿using SibersTetsTask.Server.Model.ModelDTO.UserDTO;
 
 namespace SibersTetsTask.Server.Interface.Jwt
 {
     public interface IJwtProvider
     {
-        public string GeneratToken(Employee employee);
+        public string GeneratToken(EmployeeDTO employee);
     }
 }

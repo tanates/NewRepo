@@ -1,4 +1,4 @@
-﻿namespace SibersTetsTask.Server.Model.User
+﻿namespace SibersTetsTask.Server.Model.ModelEntity.User
 {
     public class RoleEntity
     {

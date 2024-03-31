@@ -1,4 +1,4 @@
-﻿namespace SibersTetsTask.Server.Model.JWT
+﻿namespace SibersTetsTask.Server.Model.ModelDTO.JWT
 {
     public class JwtOptions
     {

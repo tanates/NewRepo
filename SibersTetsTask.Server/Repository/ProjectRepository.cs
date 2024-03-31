@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SibersTetsTask.Server.Context;
 using SibersTetsTask.Server.Interface.ProjectInt;
-using SibersTetsTask.Server.Model.Project;
-using SibersTetsTask.Server.Model.User;
+using SibersTetsTask.Server.Model.ModelDTO.ProjectDTO;
+using SibersTetsTask.Server.Model.ModelEntity.Project;
+using SibersTetsTask.Server.Model.ModelEntity.User;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 
@@ -17,12 +18,12 @@ namespace SibersTetsTask.Server.Repository
             _context = context;
         }
 
-        public async Task AddProject(Project project)
+        public async Task AddProject(ProjectDTO project) 
         {
 
             if(await _context.Projects.AnyAsync(
-                 i=>i.NameProject==project.NameProject &&            // checking if the project is already in the database
-               i.CustomerCompany == project.CustomerCompany))
+                 i=>i.Name==project.NameProject &&            // checking if the project is already in the database
+               i.CustomerName == project.CustomerCompany))
             {
                 throw new Exception("This project already exists");
             }
@@ -30,63 +31,67 @@ namespace SibersTetsTask.Server.Repository
             var projectEntity = new ProjectEntity // adding new project 
             {
                 Id = project.Id,
-                NameProject = project.NameProject,
-                EndDateProject = project.EndDateProject,
-                StartDateProject = project.StartDateProject,
-                ExecutingCompany = project.ExecutingCompany,
-                CustomerCompany = project.CustomerCompany,
-                TeamMembers = project.TeamMembers,
-                ProjectManager = project.ProjectManager,
-                PriorityProject = project.PriorityProject,
+                Name = project.NameProject,
+                EndDate = project.EndDateProject,
+                StartDate = project.StartDateProject,
+                ExecutorName = project.ExecutingCompany,
+                CustomerName = project.CustomerCompany,
+                Priority = project.PriorityProject,
+                ProjectManagerId = null,
+                Employees = null,
+                ProjectManager = null,
+                Tasks = null
             };
             await _context.Projects.AddAsync(projectEntity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<string> Delete(Guid ProjectID)
         {
-            var project = await _context.Projects.FindAsync(id);
-            if (project == null)
+            try
             {
-                return false ;
+                var project = await _context.Projects.FirstOrDefaultAsync(i => i.Id == ProjectID);
+                if (project == null)
+                {
+                    return "The project was not found to be deleted";
+                }
+
+                _context.Projects.Remove(project);
+                await _context.SaveChangesAsync();
+
+                return "The deletion has been completed";
             }
+            catch (Exception ex)
+            {
 
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-
-            return true;
+                return $"The project was not error to be deleted : {ex.Message} ";
+            }
+            
         }
 
         public async Task<List<EmployeeEntity>> EmployeesOnProject(Guid projectId)
         {
-            var membersTeam = await _context.Projects
-           .Include(e => e.TeamMembers) // Uploading related project employees
-           .FirstOrDefaultAsync(e => e.Id == projectId);
+            var project = await _context.Projects.Include(p => p.Employees).FirstOrDefaultAsync(p => p.Id == projectId);
 
-            if (membersTeam == null)
-            {
-                return new List<EmployeeEntity>();
-            }
+            var allEmployees = await _context.Employees.ToListAsync();
+            var assignedEmployees = project.Employees?.Select(e => e.Id).ToList() ?? new List<Guid>();
 
-            return membersTeam.TeamMembers.ToList();
+            var unassignedEmployees = allEmployees.Where(e => !assignedEmployees.Contains(e.Id)).ToList();
+
+            return unassignedEmployees;
         }
 
-        public async Task <EmployeeEntity> SelectManagerInProject(string name , string email)
+       public async Task <EmployeeEntity> SelectManagerInProject(string email)
         {
-            var manager = await _context.Employees.FirstOrDefaultAsync(i=>i.Name== name && i.Email ==email);
-           
-            if(manager == null)
-            {
-                return new EmployeeEntity();
-            }
-            manager.PostEmployee = "Manager";
-            _context.Update(manager);
-            await _context.SaveChangesAsync();
+            var manager = await _context.Employees
+                .FirstOrDefaultAsync(i => i.Email == email)
+                ??throw new Exception("employee not found!!Error method SelectManager");
+            
             return manager;
         }
-        public async Task<ProjectEntity> GetProjectById(Guid id)
+        public async Task<ProjectEntity> GetProjectByName(string projectName)
         {
-            var project = await _context.Projects.FirstOrDefaultAsync(i=>i.Id == id) ?? throw new Exception("Project not found by id");
+            var project = await _context.Projects.FirstOrDefaultAsync(i=>i.Name== projectName) ?? throw new Exception("Project not found by id");
             return project;
             
         }
@@ -96,66 +101,125 @@ namespace SibersTetsTask.Server.Repository
             return await _context.Projects.ToListAsync();
         }
 
-        public async Task <bool> Update(Project projectDTO)
+        public async Task <string> Update(ProjectDTO projectDTO)
         {
-            var project = await _context.Projects.Include(p => p.ProjectManager).Include(p => p.TeamMembers)
-                                         .FirstOrDefaultAsync(p => p.Id == projectDTO.Id) ?? throw new Exception("Project not found.");
-            switch (projectDTO)
+            try
             {
-                case { NameProject: not null }:
-                    project.NameProject = projectDTO.NameProject;
-                    break;
-                case { ExecutingCompany: not null }:
-                    project.ExecutingCompany = projectDTO.ExecutingCompany;
-                    break;
-                case { CustomerCompany: not null }:
-                    project.CustomerCompany = projectDTO.CustomerCompany;
-                    break;
-                case { EndDateProject: var endDate } when endDate != DateTime.MinValue:
-                    project.EndDateProject = projectDTO.EndDateProject;
-                    break;
-                case { PriorityProject: not 0 }:
-                    project.PriorityProject = projectDTO.PriorityProject;
-                    break;
-                case { ProjectManager: not null }:
-                    project.ProjectManager = projectDTO.ProjectManager;
-                    break;
-                case { TeamMembers: not null } when projectDTO.TeamMembers.Any():
-                    var teamMembersIds = projectDTO.TeamMembers.Select(e => e.Id).ToList();
-                    project.TeamMembers = await _context.Employees.Where(e => teamMembersIds.Contains(e.Id)).ToListAsync();
-                    break;
+                var project = await _context.Projects.FindAsync(projectDTO.Id) ?? throw new Exception("Project not found");
+
+                project.Name = projectDTO.NameProject ?? project.Name;
+                project.CustomerName = projectDTO.CustomerCompany ?? project.CustomerName;
+                project.ExecutorName = projectDTO.ExecutingCompany ?? project.ExecutorName;
+                if (projectDTO.StartDateProject != null)
+                {
+                    project.StartDate = projectDTO.StartDateProject.Value;
+                }
+                if (projectDTO.EndDateProject != null)
+                {
+                    project.StartDate = projectDTO.EndDateProject.Value;
+                }
+                if (projectDTO.PriorityProject != null)
+                {
+                    project.Priority = projectDTO.PriorityProject;
+                }
+                if (projectDTO.EmployeeId != null)
+                {
+                    project.ProjectManagerId = projectDTO.EmployeeId;
+                }
+
+                _context.Projects.Update(project);
+                await _context.SaveChangesAsync();
+                return "Update succsefull";
+            }
+            catch (Exception ex)  
+            {
+                return $"Error update project {ex}";
+            }
+        }
+
+        public async Task<string> RemoveEmployeeAProject(Guid ProjectID  ,Guid employeeID)
+        {
+            var project = await _context.Projects
+                .Include(i => i.Employees)
+                .FirstOrDefaultAsync(i => i.Id == ProjectID);
+
+            if (project == null)
+            {
+                return "The project was not found";
             }
 
-            _context.Projects.Update(project);
+            var employee = await _context.Employees.Include(i => i.Projects).FirstOrDefaultAsync(i => i.Id == employeeID);
+
+            if (employee == null)
+            {
+                return "The employee was not found";
+            }
+
+            var projectEmployee = employee.Projects?.FirstOrDefault(p => p.Id == project.Id);
+            if (projectEmployee == null)
+            {
+                return "The employee is not assigned to the project";
+            }
+
+            employee.Projects?.Remove(projectEmployee);
+            project.Employees?.Remove(employee);
             await _context.SaveChangesAsync();
-            return true;
+
+            return "Delete ok";
         }
 
-        public async Task<bool> RemoveEmployeeAProject(string projectName, string emailEmployee)
+
+        public async Task<string> AddEmployeeAProject(Guid projectId, Guid employeeID)
         {
-            var project = await _context.Projects.Include(p => p.TeamMembers)
-                                       .FirstOrDefaultAsync(p => p.NameProject == projectName) ?? throw new Exception("Project not found.");
-            var employeeToRemove = project.TeamMembers.FirstOrDefault(e => e.Email == emailEmployee) ?? throw new Exception("Employee not found.");
+            try
+            {
+                var project = await _context.Projects.Include(p => p.Employees).FirstOrDefaultAsync(p => p.Id == projectId);
 
-             project.TeamMembers.Remove(employeeToRemove);
-            _context.Projects.Update(project);
-            await _context.SaveChangesAsync();
-            return true;
+                if (project == null)
+                {
+                    return "Error when adding an employee: The project was not found";
+                }
 
+                var employee = await _context.Employees.FirstOrDefaultAsync(e => e.Id == employeeID);
+
+                if (employee == null)
+                {
+                    return "Error when adding an employee: The employee was not found";
+                }
+
+                if (project.Employees?.Any(e => e.Id == employeeID) == true)
+                {
+                    return "Employee already exists in the project";
+                }
+
+                project.Employees?.Add(employee);
+                employee.Projects?.Add(project);
+
+                _context.Projects.Update(project);
+                _context.Employees.Update(employee);
+                await _context.SaveChangesAsync();
+
+                return "Adding successful";
+            }
+            catch (Exception ex)
+            {
+                return $"Error adding employee: {ex.Message}";
+            }
         }
 
-        public async Task<bool> AddEmployeeAProject(string projectName, string emailEmployee)
+
+        public async Task <ICollection<EmployeeEntity>> GetEmployInProject  (Guid projectId)
         {
-            var project = await _context.Projects.Include(p => p.TeamMembers)
-                                       .FirstOrDefaultAsync(p => p.NameProject == projectName) ?? throw new Exception("Project not found.");
-            var employeeToAdd = project.TeamMembers.FirstOrDefault(e => e.Email == emailEmployee) ?? throw new Exception("Employee not found.");
+            var project  = await  _context.Projects
+                .Include(p => p.Employees).FirstOrDefaultAsync(p => p.Id == projectId);
+            var employess = project?.Employees;
+            if(employess == null)
+            {
+                return new HashSet<EmployeeEntity>(); 
+            }
 
-            project.TeamMembers.Add(employeeToAdd);
-            _context.Projects.Update(project);
-            await _context.SaveChangesAsync();
-            return true;
+            return employess;
         }
-
 
 
     }

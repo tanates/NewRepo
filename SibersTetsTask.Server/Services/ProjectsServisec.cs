@@ -1,9 +1,11 @@
 ﻿using SibersTetsTask.Server.Context;
 using SibersTetsTask.Server.Interface.ProjectInt;
+using SibersTetsTask.Server.Model.ModelDTO.ProjectDTO;
+using SibersTetsTask.Server.Model.ModelEntity.Project;
 using SibersTetsTask.Server.Model.ModelRequest;
-using SibersTetsTask.Server.Model.Project;
-using SibersTetsTask.Server.Model.User;
+using SibersTetsTask.Server.Model.ModelDTO.UserDTO;
 using System.Diagnostics.CodeAnalysis;
+using SibersTetsTask.Server.Model.ModelEntity.User;
 
 namespace SibersTetsTask.Server.Services
 {
@@ -12,33 +14,42 @@ namespace SibersTetsTask.Server.Services
        
 
         private readonly IProjectRepository _projectRepository;
-
-        public ProjectsServisec(IProjectRepository projectRepository)
+        private readonly IProjectTaskRepository _projectTaskRepository;
+        public ProjectsServisec(IProjectRepository projectRepository, IProjectTaskRepository projectTaskRepository)
         {
             _projectRepository = projectRepository;
+            _projectTaskRepository = projectTaskRepository;
         }
 
-        public async Task AddProject(ProjectRequest request, string email , string nameEmployee)
+        public async Task <bool> AddProject(ProjectRequest request)
         {
-            var employeesInProject = await _projectRepository.EmployeesOnProject(request.Id);
-            var managerInProject = await _projectRepository.SelectManagerInProject(nameEmployee, email);
-            var projectAdd = Project.Add(request, managerInProject, employeesInProject);
-            await _projectRepository.AddProject(projectAdd);
-        }
-
-        public async Task<bool> Delete(Guid id)
-        {
-            var deletResult = await _projectRepository.Delete(id);
-            if (deletResult == false)
+            try
             {
+                var projectAdd = ProjectDTO.Add(request);
+                await _projectRepository.AddProject(projectAdd);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
                 return false;
             }
-            return deletResult;
         }
 
-        public async Task<ProjectEntity> GetProjectById(Guid id)
+        public async Task<string> Delete(Guid projectId)
         {
-            var project = await  _projectRepository.GetProjectById(id);
+            var deletResult = await _projectRepository.Delete(projectId);
+           
+            return deletResult;
+        }
+        public async Task<ICollection<EmployeeEntity>> GetEmployInProject(Guid projectId)
+        {
+            var result = await _projectRepository.GetEmployInProject(projectId);
+            return result;
+        }
+        public async Task<ProjectEntity> GetProjectByName(string projectName)
+        {
+            var project = await  _projectRepository.GetProjectByName(projectName);
             if (project == null)
             {
                 throw new Exception("Not found project");
@@ -60,31 +71,32 @@ namespace SibersTetsTask.Server.Services
             return projectsListEntity;
         }
 
-        public async Task <bool> Update(Project project)
+        public async Task <string> Update(ProjectRequest request)
         {
+           // var projectTask = await _projectTaskRepository.GetProjectTaskByEmployee(request.NameProject);
+           // var employeesInProject = await _projectRepository.EmployeesOnProject(request.Id);
+            var managerInProject = await _projectRepository.SelectManagerInProject( request.emailEmployee);
+            var project = ProjectDTO.Add(request /*, employeesInProject */);
             var result = await _projectRepository.Update(project);
 
-            if (result == false)
-            {
-                throw new Exception("The update was not successful");
-            }
 
             return result;
         }
 
-        public async Task<bool> RemoveEmployeeAProject(string projectName , string emailEmployee)
+        public async Task<string> RemoveEmployeeAProject(Guid projectId, Guid employeeId)
         {
-            var result = await _projectRepository.RemoveEmployeeAProject(projectName, emailEmployee); 
+            var result = await _projectRepository.RemoveEmployeeAProject(projectId, employeeId); 
                
-            return result ? throw new Exception("Deleting an employee from a project was not successful"):true ;
+            return result  ;
 
         }
-        public async Task<bool> AddEmployeeAProject(string projectName, string emailEmployee)
+
+        public async Task<List<EmployeeEntity>> EmployeesOnProject(Guid projectId)
         {
-            var result = await _projectRepository.AddEmployeeAProject(projectName, emailEmployee);
-
-            return result ? throw new Exception("Adding an employee from a project was not successful") : true;
-
+            var result = await _projectRepository.EmployeesOnProject(projectId);
+            return result;
         }
+
+
     }
 }

@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SibersTetsTask.Server.Interface.Jwt;
-using SibersTetsTask.Server.Model.JWT;
-using SibersTetsTask.Server.Model.User;
+using SibersTetsTask.Server.Model.ModelDTO.JWT;
+using SibersTetsTask.Server.Model.ModelDTO.UserDTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -18,7 +18,7 @@ namespace SibersTetsTask.Server.JWT
         }
 
 
-        public string GeneratToken(Employee Employee)
+        public string GeneratToken(EmployeeDTO Employee)
         {
             Claim[] calims = [new("userId", Employee.Id.ToString())];
 

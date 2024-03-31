@@ -1,56 +1,22 @@
-import { useEffect, useState } from 'react';
 import './App.css';
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Project from './Component/ProjectComponent/Project';
+import EmployeePage from './Component/EmployeeComponent/EmployeePage';
+import Navigation from './Navigation';
 
-interface Forecast {
-    date: string;
-    temperatureC: number;
-    temperatureF: number;
-    summary: string;
-}
-
-function App() {
-    const [forecasts, setForecasts] = useState<Forecast[]>();
-
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
-
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tabelLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
-    return (
-        <div>
-            <h1 id="tabelLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
-
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
-        const data = await response.json();
-        setForecasts(data);
-    }
-}
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+    <Navigation />
+      <div className='text-center mt-5'>
+        <Routes>
+          <Route path="/Project" element={<Project />} />
+          <Route path="/Employee" element={<EmployeePage />} />
+          <Route path="/Task" element={<div>Task page</div>} /> {/* Добавьте компонент Task позже */}
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+};
 
 export default App;
